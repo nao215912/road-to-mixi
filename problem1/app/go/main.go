@@ -2,14 +2,16 @@ package main
 
 import (
 	"database/sql"
+	"fmt"
 	_ "github.com/go-sql-driver/mysql"
-	"github.com/labstack/echo/v4"
+	echo "github.com/labstack/echo/v4"
 	"net/http"
 	"problem1/configs"
 	"strconv"
 )
 
 func main() {
+	fmt.Println("start")
 	conf := configs.Get()
 
 	db, err := sql.Open(conf.DB.Driver, conf.DB.DataSource)
@@ -21,7 +23,7 @@ func main() {
 	e := echo.New()
 
 	e.GET("/", func(c echo.Context) error {
-		return c.String(http.StatusOK, "minimal_sns_app")
+		return c.String(http.StatusOK, "minimal_sns_app 1")
 	})
 
 	e.GET("/get_friend_list", func(c echo.Context) error {
