@@ -3,8 +3,8 @@ package handler
 import (
 	"fmt"
 	"github.com/labstack/echo/v4"
+	"minimal_sns/dao"
 	"net/http"
-	"problem1/dao"
 )
 
 func NewGetFriendList(d dao.Dao) echo.HandlerFunc {

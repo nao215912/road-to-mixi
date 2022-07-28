@@ -1,4 +1,4 @@
-module problem1
+module minimal_sns
 
 go 1.16
 

@@ -2,8 +2,8 @@ package dao
 
 import (
 	"github.com/jmoiron/sqlx"
-	"problem1/domain/object"
-	"problem1/domain/repository"
+	"minimal_sns/domain/object"
+	"minimal_sns/domain/repository"
 )
 
 type User struct {

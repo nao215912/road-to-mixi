@@ -2,8 +2,8 @@ package dao
 
 import (
 	"github.com/jmoiron/sqlx"
-	"problem1/configs"
-	"problem1/domain/repository"
+	"minimal_sns/configs"
+	"minimal_sns/domain/repository"
 )
 
 type Dao interface {

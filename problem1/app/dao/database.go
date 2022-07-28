@@ -4,7 +4,7 @@ import (
 	"fmt"
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/jmoiron/sqlx"
-	"problem1/configs"
+	"minimal_sns/configs"
 )
 
 type DBConfig interface {

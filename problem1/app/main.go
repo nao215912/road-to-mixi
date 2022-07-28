@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	"log"
-	"problem1/configs"
-	"problem1/dao"
-	"problem1/handler"
+	"minimal_sns/configs"
+	"minimal_sns/dao"
+	"minimal_sns/handler"
 	"strconv"
 )
 

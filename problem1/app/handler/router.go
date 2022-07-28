@@ -2,8 +2,8 @@ package handler
 
 import (
 	"github.com/labstack/echo/v4"
+	"minimal_sns/dao"
 	"net/http"
-	"problem1/dao"
 )
 
 func NewRouter(d dao.Dao) *echo.Echo {
