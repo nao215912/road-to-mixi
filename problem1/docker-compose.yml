@@ -20,14 +20,14 @@ volumes:
 
 services:
   app:
-    container_name: minimal_sns_app
+    container_name: minimal_sns
     build: .
     ports:
       - "2345:2345"
       - "1323:1323"
     volumes:
-      - ./:/go/src
-    working_dir: /go/src/app/
+      - ./:/minimal_sns
+    working_dir: /minimal_sns/app/
     networks:
       - front
       - back
