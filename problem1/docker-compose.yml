@@ -21,21 +21,19 @@ volumes:
 services:
   app:
     container_name: minimal_sns_app
-# NOTE: for ruby
-#    build: app/ruby
-#    volumes:
-#      - socket:/var/run/unicorn/
-# NOTE: for go
-    build: app/go
-    volumes:
-      - ./app/go:/app
+    build: .
     ports:
+      - "2345:2345"
       - "1323:1323"
+    volumes:
+      - ./:/go/src
+    working_dir: /go/src/app/
     networks:
       - front
       - back
     environment:
       TZ: "Asia/Tokyo"
+    command: air -c .air.toml
   db:
     image: mysql:latest
     container_name: db
