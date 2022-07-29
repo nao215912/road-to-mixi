@@ -9,6 +9,9 @@ debug:
 stop:
 	docker-compose stop
 
+db:
+	docker-compose exec db mysql -u root
+
 
 del:
 	docker system prune -af
