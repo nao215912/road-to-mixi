@@ -8,7 +8,7 @@ package object
 //	);
 
 type User struct {
-	ID     int `db:"id"`
-	UserID int `db:"user_id"`
-	Name   int `db:"name"`
+	ID     int    `db:"id"`
+	UserID int    `db:"user_id"`
+	Name   string `db:"name"`
 }

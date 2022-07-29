@@ -1,7 +1,10 @@
 package repository
 
-import "minimal_sns/domain/object"
+import (
+	"context"
+	"minimal_sns/domain/object"
+)
 
 type User interface {
-	GetFriendList(userID int) []object.User
+	GetFriendList(ctx context.Context, userID int) ([]object.User, error)
 }
