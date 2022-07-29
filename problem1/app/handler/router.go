@@ -8,6 +8,7 @@ import (
 func NewRouter(d dao.Dao) *echo.Echo {
 	e := echo.New()
 	e.GET("/get_friend_list/:user_id", NewGetFriendList(d))
+	e.GET("/get_friend_of_friend_list/:user_id", NewGetFriendOfFriendList(d))
 
 	return e
 }

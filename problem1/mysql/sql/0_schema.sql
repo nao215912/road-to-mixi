@@ -24,4 +24,3 @@ CREATE TABLE `block_list`
     UNIQUE (blocking_user_id, blocked_user_id),
     PRIMARY KEY (`id`)
 );
-
