@@ -47,43 +47,37 @@ func usersGenerator() {
 }
 
 func friendLinkGenerator() {
-	am := map[int]int{}
-	bm := map[int]int{}
+	m := map[string]struct{}{}
 	for i := 0; i < 400; {
 		a := rand.Int()%400 + 1
 		b := rand.Int()%400 + 1
 		if a >= b {
 			continue
 		}
-		va, aok := am[a]
-		vb, bok := bm[b]
-		if aok && bok && va == vb {
+		query := fmt.Sprintf("INSERT INTO `friend_link` (`user1_id`,`user2_id`) VALUES (%d,%d);\n", a, b)
+		if _, ok := m[query]; ok {
 			continue
 		}
-		fmt.Printf("INSERT INTO `friend_link` (`user1_id`,`user2_id`) VALUES (%d,%d);\n", a, b)
-		am[a] = i
-		bm[b] = i
+		fmt.Printf(query)
+		m[query] = struct{}{}
 		i++
 	}
 }
 
 func blockLinkGenerator() {
-	am := map[int]int{}
-	bm := map[int]int{}
+	m := map[string]struct{}{}
 	for i := 0; i < 400; {
 		a := rand.Int()%400 + 1
 		b := rand.Int()%400 + 1
 		if a == b {
 			continue
 		}
-		va, aok := am[a]
-		vb, bok := bm[b]
-		if aok && bok && va == vb {
+		query := fmt.Sprintf("INSERT INTO `block_list` (`blocking_user_id`,`blocked_user_id`) VALUES (%d,%d);\n", a, b)
+		if _, ok := m[query]; ok {
 			continue
 		}
-		fmt.Printf("INSERT INTO `block_list` (`blocking_user_id`,`blocked_user_id`) VALUES (%d,%d);\n", a, b)
-		am[a] = i
-		bm[b] = i
+		fmt.Printf(query)
+		m[query] = struct{}{}
 		i++
 	}
 }
