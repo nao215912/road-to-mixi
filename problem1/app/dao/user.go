@@ -20,7 +20,7 @@ func (u *User) GetFriendOfFriendListExceptBlockListAndFriendList(ctx context.Con
 								CASE
 									WHEN blocking_user_id = ? THEN
 									    blocked_user_id
-									ELSE 
+									ELSE
 									    blocking_user_id
 								END as user_id
 							from
@@ -34,17 +34,17 @@ func (u *User) GetFriendOfFriendListExceptBlockListAndFriendList(ctx context.Con
 								CASE
 									WHEN user1_id = ? THEN
 									    user2_id
-									ELSE 
+									ELSE
 									    user1_id
-								END  as user_id
+								END as user_id
 							from
 								friend_link
 							where
 								? in (user1_id, user2_id)
-							and 
+							and
 								(
 							    	user1_id not in (select user_id from block_relation)
-								or 
+								or
 							    	user2_id not in (select user_id from block_relation)
 								)
 						),
@@ -54,7 +54,7 @@ func (u *User) GetFriendOfFriendListExceptBlockListAndFriendList(ctx context.Con
 								CASE
 									WHEN user1_id in (select user_id from friend_list) THEN
 									    user2_id
-									ELSE 
+									ELSE
 										user1_id
 								END as user_id
 							from
@@ -65,14 +65,14 @@ func (u *User) GetFriendOfFriendListExceptBlockListAndFriendList(ctx context.Con
 								or
 									user2_id in (select user_id from friend_list)
 								)
-							and 
+							and
 							    (
 							        user1_id not in (select user_id from block_relation)
-								or 
+								or
 							    	user2_id not in (select user_id from block_relation)
 							    )
 						)
-		
+
 					select
 						distinct
 						id,
@@ -102,9 +102,9 @@ func (u *User) GetFriendOfFriendList(ctx context.Context, userID int) ([]object.
 								CASE
 									WHEN user1_id = ? THEN
 									    user2_id
-									ELSE 
+									ELSE
 									    user1_id
-								END  as user_id
+								END as user_id
 							from
 								friend_link
 							where
@@ -116,7 +116,7 @@ func (u *User) GetFriendOfFriendList(ctx context.Context, userID int) ([]object.
 								CASE
 									WHEN user1_id in (select user_id from friend_list) THEN
 									    user2_id
-									ELSE 
+									ELSE
 										user1_id
 								END as user_id
 							from
@@ -126,7 +126,7 @@ func (u *User) GetFriendOfFriendList(ctx context.Context, userID int) ([]object.
 							or
 								user2_id in (select user_id from friend_list)
 						)
-		
+
 					select
 						distinct
 						id,
@@ -136,7 +136,7 @@ func (u *User) GetFriendOfFriendList(ctx context.Context, userID int) ([]object.
 						users
 					where
 						user_id in (select user_id from friend_of_friend_list);
-		`
+`
 	var users []object.User
 	err := u.db.SelectContext(ctx, &users, query, userID, userID)
 	if err != nil {
@@ -154,7 +154,7 @@ func (u *User) GetFriendList(ctx context.Context, userID int) ([]object.User, er
 								CASE
 									WHEN user1_id = ? THEN
 									    user2_id
-									ELSE 
+									ELSE
 									    user1_id
 								END as user_id
 							from
