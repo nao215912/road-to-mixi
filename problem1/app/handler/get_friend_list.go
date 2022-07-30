@@ -4,14 +4,11 @@ import (
 	"github.com/labstack/echo/v4"
 	"minimal_sns/dao"
 	"net/http"
-	"strconv"
 )
 
 func NewGetFriendList(d dao.Dao) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		c.Param("user_id")
-		userIDStr := c.Param("user_id")
-		userID, err := strconv.Atoi(userIDStr)
+		userID, err := UserIDPathParameter(c)
 		if err != nil {
 			return err
 		}
