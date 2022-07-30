@@ -12,7 +12,6 @@ type User struct {
 }
 
 func (u *User) GetFriendOfFriendListExceptBlockListAndFriendList(ctx context.Context, userID int) ([]object.User, error) {
-	var users []object.User
 	const query = `
 					with
 					    block_relation as
@@ -86,6 +85,7 @@ func (u *User) GetFriendOfFriendListExceptBlockListAndFriendList(ctx context.Con
 					and
 					    user_id not in (select user_id from friend_list);
 		`
+	var users []object.User
 	err := u.db.SelectContext(ctx, &users, query, userID, userID, userID, userID)
 	if err != nil {
 		return nil, err
@@ -94,7 +94,6 @@ func (u *User) GetFriendOfFriendListExceptBlockListAndFriendList(ctx context.Con
 }
 
 func (u *User) GetFriendOfFriendList(ctx context.Context, userID int) ([]object.User, error) {
-	var users []object.User
 	const query = `
 					with
 						friend_list as
@@ -138,6 +137,7 @@ func (u *User) GetFriendOfFriendList(ctx context.Context, userID int) ([]object.
 					where
 						user_id in (select user_id from friend_of_friend_list);
 		`
+	var users []object.User
 	err := u.db.SelectContext(ctx, &users, query, userID, userID)
 	if err != nil {
 		return nil, err
@@ -146,7 +146,6 @@ func (u *User) GetFriendOfFriendList(ctx context.Context, userID int) ([]object.
 }
 
 func (u *User) GetFriendList(ctx context.Context, userID int) ([]object.User, error) {
-	var users []object.User
 	const query = `
 					with
 					    friend_list as
@@ -173,6 +172,7 @@ func (u *User) GetFriendList(ctx context.Context, userID int) ([]object.User, er
 					where
 					    user_id in (select user_id from friend_list);
 `
+	var users []object.User
 	err := u.db.SelectContext(ctx, &users, query, userID, userID)
 	if err != nil {
 		return nil, err
