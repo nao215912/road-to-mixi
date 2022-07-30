@@ -1,19 +1,19 @@
-CREATE TABLE `users`
+create table `users`
 (
-    `id`      bigint(20)             NOT NULL AUTO_INCREMENT,
-    `user_id` int(11)                NOT NULL,
-    `name`    varchar(64) DEFAULT '' NOT NULL,
-    PRIMARY KEY (`id`)
+    `id`      bigint(20)             not null auto_increment,
+    `user_id` int(11)                not null,
+    `name`    varchar(64) default '' not null,
+    primary key (`id`)
 );
 -- user1 user2
-CREATE TABLE `friend_link`
+create table  `friend_link`
 (
-    `id`       bigint(20) NOT NULL AUTO_INCREMENT,
-    `user1_id` int(11)    NOT NULL,
-    `user2_id` int(11)    NOT NULL,
+    `id`       bigint(20) not null auto_increment,
+    `user1_id` int(11)    not null,
+    `user2_id` int(11)    not null,
     check ( user1_id < user2_id ),
-    UNIQUE (user1_id, user2_id),
-    PRIMARY KEY (`id`)
+    unique (user1_id, user2_id),
+    primary key (`id`)
 );
 -- user1 user2 block
 CREATE TABLE `block_list`
