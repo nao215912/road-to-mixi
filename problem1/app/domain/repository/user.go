@@ -8,4 +8,5 @@ import (
 type User interface {
 	GetFriendList(ctx context.Context, userID int) ([]object.User, error)
 	GetFriendOfFriendList(ctx context.Context, userID int) ([]object.User, error)
+	GetFriendOfFriendListExceptBlockListAndFriendList(ctx context.Context, userID int) ([]object.User, error)
 }
