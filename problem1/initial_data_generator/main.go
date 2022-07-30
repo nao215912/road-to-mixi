@@ -12,10 +12,10 @@ import (
 
 var (
 	generatorTypePtr = flag.String("type", "users", "choose generator type")
-	generatorMap     = map[string]func(){
+	generatorMap     = map[string]func() error{
 		"users":       usersGenerator,
 		"friend_link": friendLinkGenerator,
-		"block_list":  blockLinkGenerator,
+		"block_list":  blockListGenerator,
 	}
 )
 
@@ -25,28 +25,31 @@ func init() {
 
 func main() {
 	if generator, ok := generatorMap[*generatorTypePtr]; ok {
-		generator()
+		if err := generator(); err != nil {
+			log.Fatalln(err)
+		}
 	} else {
 		log.Fatalln("unexpected generator type")
 	}
 }
 
-func usersGenerator() {
+func usersGenerator() error {
 	res, err := http.Get("https://ideas.fandom.com/wiki/List_of_Gods")
 	if err != nil {
-		panic(err)
+		return err
 	}
 	doc, err := goquery.NewDocumentFromReader(res.Body)
 	if err != nil {
-		panic(err)
+		return err
 	}
 	doc.Find(".new").Each(func(index int, s *goquery.Selection) {
 		text := strings.TrimSpace(s.Text())
 		fmt.Printf("INSERT INTO `users` (`user_id`,`name`) VALUES (%d,\"%s\");\n", index+1, text)
 	})
+	return nil
 }
 
-func friendLinkGenerator() {
+func friendLinkGenerator() error {
 	m := map[string]struct{}{}
 	for i := 0; i < 400; {
 		a := rand.Int()%400 + 1
@@ -62,9 +65,10 @@ func friendLinkGenerator() {
 		m[query] = struct{}{}
 		i++
 	}
+	return nil
 }
 
-func blockLinkGenerator() {
+func blockListGenerator() error {
 	m := map[string]struct{}{}
 	for i := 0; i < 400; {
 		a := rand.Int()%400 + 1
@@ -80,4 +84,5 @@ func blockLinkGenerator() {
 		m[query] = struct{}{}
 		i++
 	}
+	return nil
 }
