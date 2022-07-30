@@ -60,7 +60,7 @@ INSERT INTO `friend_link` (`user1_id`,`user2_id`) VALUES (32,127);
 INSERT INTO `friend_link` (`user1_id`,`user2_id`) VALUES (184,270);
 INSERT INTO `friend_link` (`user1_id`,`user2_id`) VALUES (260,388);
 INSERT INTO `friend_link` (`user1_id`,`user2_id`) VALUES (172,190);
-INSERT INTO `friend_link` (`user1_id`,`user2_id`) VALUES (0,68);
+INSERT INTO `friend_link` (`user1_id`,`user2_id`) VALUES (1,68);
 INSERT INTO `friend_link` (`user1_id`,`user2_id`) VALUES (48,148);
 INSERT INTO `friend_link` (`user1_id`,`user2_id`) VALUES (39,71);
 INSERT INTO `friend_link` (`user1_id`,`user2_id`) VALUES (4,159);
