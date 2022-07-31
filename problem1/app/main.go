@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"log"
 	"minimal_sns/configs"
 	"minimal_sns/dao"
@@ -11,6 +12,7 @@ import (
 func main() {
 
 	conf := configs.Get()
+	fmt.Println(conf.DB.DataSource)
 	d, err := dao.NewDao(conf)
 	if err != nil {
 		log.Fatalln(err)

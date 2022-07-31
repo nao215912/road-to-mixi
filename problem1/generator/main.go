@@ -52,7 +52,7 @@ func usersGenerator() error {
 func friendLinkGenerator() error {
 	fmt.Print("INSERT INTO `friend_link` (`user1_id`, `user2_id`) VALUES")
 	m := map[string]struct{}{}
-	for i := 0; i < 5000; {
+	for i := 0; i < 100; {
 		a := rand.Int()%400 + 1
 		b := rand.Int()%400 + 1
 		if a >= b {
@@ -77,7 +77,7 @@ func friendLinkGenerator() error {
 func blockListGenerator() error {
 	fmt.Print("INSERT INTO `block_list` (`blocking_user_id`, `blocked_user_id`) VALUES")
 	m := map[string]struct{}{}
-	for i := 0; i < 5000; {
+	for i := 0; i < 100; {
 		a := rand.Int()%400 + 1
 		b := rand.Int()%400 + 1
 		if a == b {

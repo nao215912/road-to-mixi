@@ -48,3 +48,17 @@ services:
       MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
       MYSQL_DATABASE: "app"
       TZ: "Asia/Tokyo"
+  test_db:
+    image: mysql:latest
+    container_name: test_db
+    hostname: test_db
+    networks:
+      - back
+    volumes:
+      - ./mysql/my.cnf:/etc/mysql/my.cnf
+      - ./mysql/conf.d/mysql.cnf:/etc/mysql/conf.d/mysql.cnf
+      - ./mysql/test_sql:/docker-entrypoint-initdb.d
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+      MYSQL_DATABASE: "app"
+      TZ: "Asia/Tokyo"

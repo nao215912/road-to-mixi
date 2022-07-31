@@ -12,9 +12,15 @@ stop:
 db:
 	docker-compose exec db mysql -u root
 
+app:
+	docker-compose exec app bash
+
+test:
+	docker-compose exec app go test ./...
+
 
 del:
 	docker system prune -af
 
 
-.PHONY: up debug stop del
+.PHONY: up debug stop del app test
