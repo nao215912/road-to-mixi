@@ -50,39 +50,51 @@ func usersGenerator() error {
 }
 
 func friendLinkGenerator() error {
+	fmt.Print("INSERT INTO `friend_link` (`user1_id`, `user2_id`) VALUES")
 	m := map[string]struct{}{}
-	for i := 0; i < 400; {
+	for i := 0; i < 5000; {
 		a := rand.Int()%400 + 1
 		b := rand.Int()%400 + 1
 		if a >= b {
 			continue
 		}
-		query := fmt.Sprintf("INSERT INTO `friend_link` (`user1_id`,`user2_id`) VALUES (%d,%d);\n", a, b)
+		query := fmt.Sprintf("(%d, %d)", a, b)
 		if _, ok := m[query]; ok {
 			continue
 		}
-		fmt.Printf(query)
+		if i == 0 {
+			fmt.Print(" ", query)
+		} else {
+			fmt.Print(" ,", query)
+		}
 		m[query] = struct{}{}
 		i++
 	}
+	fmt.Print(";")
 	return nil
 }
 
 func blockListGenerator() error {
+	fmt.Print("INSERT INTO `block_list` (`blocking_user_id`, `blocked_user_id`) VALUES")
 	m := map[string]struct{}{}
-	for i := 0; i < 400; {
+	for i := 0; i < 5000; {
 		a := rand.Int()%400 + 1
 		b := rand.Int()%400 + 1
 		if a == b {
 			continue
 		}
-		query := fmt.Sprintf("INSERT INTO `block_list` (`blocking_user_id`,`blocked_user_id`) VALUES (%d,%d);\n", a, b)
+		query := fmt.Sprintf("(%d, %d)", a, b)
 		if _, ok := m[query]; ok {
 			continue
 		}
-		fmt.Printf(query)
+		if i == 0 {
+			fmt.Print(" ", query)
+		} else {
+			fmt.Print(" ,", query)
+		}
 		m[query] = struct{}{}
 		i++
 	}
+	fmt.Print(";")
 	return nil
 }

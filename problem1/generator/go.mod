@@ -1,4 +1,4 @@
-module initial_data_generator
+module generator
 
 go 1.18
 

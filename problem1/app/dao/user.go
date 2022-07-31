@@ -15,76 +15,63 @@ func (u *User) GetFriendOfFriendListExceptBlockListAndFriendList(ctx context.Con
 	const query = `
 					with
 					    block_relation as
-						(
-							select
-								CASE
-									WHEN blocking_user_id = ? THEN
-									    blocked_user_id
-									ELSE
-									    blocking_user_id
-								END as user_id
-							from
-								block_list
-							where
-								? in (blocking_user_id, blocked_user_id)
-						),
-						friend_list as
-						(
-							select
-								CASE
-									WHEN user1_id = ? THEN
-									    user2_id
-									ELSE
-									    user1_id
-								END as user_id
-							from
-								friend_link
-							where
-								? in (user1_id, user2_id)
-							and
-								(
-							    	user1_id not in (select user_id from block_relation)
-								or
-							    	user2_id not in (select user_id from block_relation)
-								)
-						),
-						friend_of_friend_list as
-						(
-							select
-								CASE
-									WHEN user1_id in (select user_id from friend_list) THEN
-									    user2_id
-									ELSE
-										user1_id
-								END as user_id
-							from
-								friend_link
-							where
-								(
-								    user1_id in (select user_id from friend_list)
-								or
-									user2_id in (select user_id from friend_list)
-								)
-							and
-							    (
-							        user1_id not in (select user_id from block_relation)
-								or
-							    	user2_id not in (select user_id from block_relation)
-							    )
-						)
-
+					    (
+					        select
+					            CASE
+					                WHEN blocking_user_id = ? THEN
+					                    blocked_user_id
+					                ELSE
+					                    blocking_user_id
+					                END as user_id
+					        from
+					            block_list
+					        where
+					            ? in (blocking_user_id, blocked_user_id)
+					    ),
+					    friend_list as
+					    (
+					        select
+					            CASE
+					                WHEN user1_id = ? THEN
+					                    user2_id
+					                ELSE
+					                    user1_id
+					                END as user_id
+					        from
+					            friend_link
+					        where
+					            ? in (user1_id, user2_id)
+					    ),
+					    friend_of_friend_list as
+					    (
+					        select
+					            CASE
+					                WHEN user1_id in (select user_id from friend_list) THEN
+					                    user2_id
+					                ELSE
+					                    user1_id
+					                END as user_id
+					        from
+					            friend_link
+					        where
+					            user1_id in (select user_id from friend_list)
+					        or
+					            user2_id in (select user_id from friend_list)
+					    )
 					select
-						distinct
-						id,
-						user_id,
-						name
+					    distinct
+					    id,
+					    user_id,
+					    name
 					from
-						users
+					    users
 					where
-						user_id in (select user_id from friend_of_friend_list)
+					    user_id in (select user_id from friend_of_friend_list)
 					and
-					    user_id not in (select user_id from friend_list);
-		`
+					    user_id not in (select user_id from friend_list)
+					and
+					    user_id not in (select user_id from block_relation);
+`
 	var users []object.User
 	err := u.db.SelectContext(ctx, &users, query, userID, userID, userID, userID)
 	if err != nil {
