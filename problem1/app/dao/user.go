@@ -11,7 +11,7 @@ type User struct {
 	db *sqlx.DB
 }
 
-// GetFriendOfFriendListExceptBlockListAndFriendList go側でやるかsql側でやるか迷う　（ロジックのテストをデータベースないとできないのが微妙）
+// GetFriendOfFriendListExceptBlockListAndFriendList ロジックをgo側でやるかsql側でやるか迷う　（ロジックのテストをデータベースないとできないのが微妙）
 func (u *User) GetFriendOfFriendListExceptBlockListAndFriendList(ctx context.Context, userID int) ([]object.User, error) {
 	const baseQuery = `
 					with
@@ -73,19 +73,20 @@ func (u *User) GetFriendOfFriendListExceptBlockListAndFriendList(ctx context.Con
 					and
 					    user_id not in (select user_id from block_relation);
 `
-	arg := map[string]interface{}{
+	query, args, err := sqlx.Named(baseQuery, map[string]interface{}{
 		"target_user_id": userID,
-	}
-	query, args, err := sqlx.Named(baseQuery, arg)
+	})
 	if err != nil {
 		return nil, err
 	}
 	query = u.db.Rebind(query)
+
 	var users []object.User
 	err = u.db.SelectContext(ctx, &users, query, args...)
 	if err != nil {
 		return nil, err
 	}
+
 	return users, nil
 }
 
@@ -133,19 +134,20 @@ func (u *User) GetFriendOfFriendList(ctx context.Context, userID int) ([]object.
 					where
 						user_id in (select user_id from friend_of_friend_list);
 `
-	arg := map[string]interface{}{
+	query, args, err := sqlx.Named(baseQuery, map[string]interface{}{
 		"target_user_id": userID,
-	}
-	query, args, err := sqlx.Named(baseQuery, arg)
+	})
 	if err != nil {
 		return nil, err
 	}
 	query = u.db.Rebind(query)
+
 	var users []object.User
 	err = u.db.SelectContext(ctx, &users, query, args...)
 	if err != nil {
 		return nil, err
 	}
+
 	return users, nil
 }
 
@@ -176,19 +178,20 @@ func (u *User) GetFriendList(ctx context.Context, userID int) ([]object.User, er
 					where
 					    user_id in (select user_id from friend_list);
 `
-	arg := map[string]interface{}{
+	query, args, err := sqlx.Named(baseQuery, map[string]interface{}{
 		"target_user_id": userID,
-	}
-	query, args, err := sqlx.Named(baseQuery, arg)
+	})
 	if err != nil {
 		return nil, err
 	}
 	query = u.db.Rebind(query)
+
 	var users []object.User
 	err = u.db.SelectContext(ctx, &users, query, args...)
 	if err != nil {
 		return nil, err
 	}
+
 	return users, nil
 }
 
