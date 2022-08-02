@@ -13,10 +13,11 @@ import (
 var (
 	generatorTypePtr = flag.String("type", "users", "choose generator type")
 	generatorMap     = map[string]func() error{
-		"users":       usersGenerator,
-		"friend_link": friendLinkGenerator,
-		"block_list":  blockListGenerator,
+		"users":  usersGenerator,
+		"follow": followGenerator,
+		"block":  blockGenerator,
 	}
+	n = 10000
 )
 
 func init() {
@@ -49,13 +50,13 @@ func usersGenerator() error {
 	return nil
 }
 
-func friendLinkGenerator() error {
-	fmt.Print("INSERT INTO `friend_link` (`user1_id`, `user2_id`) VALUES")
+func followGenerator() error {
+	fmt.Print("INSERT INTO `follow_relation` (`following_user_id`, `followed_user_id`) VALUES")
 	m := map[string]struct{}{}
-	for i := 0; i < 100; {
+	for i := 0; i < n; {
 		a := rand.Int()%400 + 1
 		b := rand.Int()%400 + 1
-		if a >= b {
+		if a == b {
 			continue
 		}
 		query := fmt.Sprintf("(%d, %d)", a, b)
@@ -74,10 +75,10 @@ func friendLinkGenerator() error {
 	return nil
 }
 
-func blockListGenerator() error {
-	fmt.Print("INSERT INTO `block_list` (`blocking_user_id`, `blocked_user_id`) VALUES")
+func blockGenerator() error {
+	fmt.Print("INSERT INTO `block_relation` (`blocking_user_id`, `blocked_user_id`) VALUES")
 	m := map[string]struct{}{}
-	for i := 0; i < 100; {
+	for i := 0; i < n; {
 		a := rand.Int()%400 + 1
 		b := rand.Int()%400 + 1
 		if a == b {

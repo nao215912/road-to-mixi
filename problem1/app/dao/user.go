@@ -14,64 +14,100 @@ type User struct {
 // GetFriendOfFriendListExceptBlockListAndFriendList ロジックをgo側でやるかsql側でやるか迷う　（ロジックのテストをデータベースないとできないのが微妙）
 func (u *User) GetFriendOfFriendListExceptBlockListAndFriendList(ctx context.Context, userID int) ([]object.User, error) {
 	const baseQuery = `
-					with
-					    block_relation as
-					    (
-					        select
-					            CASE
-					                WHEN blocking_user_id = :target_user_id THEN
-					                    blocked_user_id
-					                ELSE
-					                    blocking_user_id
-					                END as user_id
-					        from
-					            block_list
-					        where
-					            :target_user_id in (blocking_user_id, blocked_user_id)
-					    ),
-					    friend_list as
-					    (
-					        select
-					            CASE
-					                WHEN user1_id = :target_user_id THEN
-					                    user2_id
-					                ELSE
-					                    user1_id
-					                END as user_id
-					        from
-					            friend_link
-					        where
-					            :target_user_id in (user1_id, user2_id)
-					    ),
-					    friend_of_friend_list as
-					    (
-					        select
-					            CASE
-					                WHEN user1_id in (select user_id from friend_list) THEN
-					                    user2_id
-					                ELSE
-					                    user1_id
-					                END as user_id
-					        from
-					            friend_link
-					        where
-					            user1_id in (select user_id from friend_list)
-					        or
-					            user2_id in (select user_id from friend_list)
-					    )
-					select
-					    distinct
-					    id,
-					    user_id,
-					    name
-					from
-					    users
-					where
-					    user_id in (select user_id from friend_of_friend_list)
-					and
-					    user_id not in (select user_id from friend_list)
-					and
-					    user_id not in (select user_id from block_relation);
+						with
+						    following as
+						    (
+						        select
+						            following_user_id as user_id
+						        from
+						            follow_relation
+						        where
+						            followed_user_id = :target_user_id
+						    ),
+						    followed as
+						    (
+						        select
+						            followed_user_id as user_id
+						        from
+						            follow_relation
+						        where
+						            following_user_id = :target_user_id
+						    ),
+						    follow as
+						    (
+						        select
+						            following.user_id as user_id
+						        from
+						            following
+						        where
+						            user_id in (select user_id from followed)
+						    ),
+						    follow_of_following as
+						    (
+						        select
+						            following_user_id as user_id
+						        from
+						            follow_relation
+						        where
+						            followed_user_id in (select user_id from follow)
+						    ),
+						    follow_of_followed as
+						    (
+						        select
+						            followed_user_id as user_id
+						        from
+						            follow_relation
+						        where
+						            following_user_id in (select user_id from follow)
+						    ),
+						    follow_of_follow as
+						    (
+						        select
+						            follow_of_following.user_id as user_id
+						        from
+						            follow_of_following
+						        where
+						            user_id in (select user_id from follow_of_followed)
+						    ),
+						    blocking as
+						    (
+						        select
+						            blocking_user_id as user_id
+						        from
+						            block_relation
+						        where
+						            blocked_user_id = :target_user_id
+						    ),
+						    blocked as
+						    (
+						        select
+						            blocked_user_id as user_id
+						        from
+						            block_relation
+						        where
+						            blocking_user_id = :target_user_id
+						    ),
+						    block as
+						    (
+						        select
+						            blocking.user_id as user_id
+						        from
+						            blocking
+						        where
+						            user_id in (select user_id from blocked)
+						    )
+						select
+						    id,
+						    user_id,
+						    name
+						from
+						    users
+						where
+						    user_id in (select user_id from follow_of_follow)
+						and
+						    user_id not in (select user_id from follow)
+						and
+						    user_id not in (select user_id from block)
 `
 	query, args, err := sqlx.Named(baseQuery, map[string]interface{}{
 		"target_user_id": userID,
@@ -92,47 +128,57 @@ func (u *User) GetFriendOfFriendListExceptBlockListAndFriendList(ctx context.Con
 
 func (u *User) GetFriendOfFriendList(ctx context.Context, userID int) ([]object.User, error) {
 	const baseQuery = `
-					with
-						friend_list as
-						(
-							select
-								CASE
-									WHEN user1_id = :target_user_id THEN
-									    user2_id
-									ELSE
-									    user1_id
-								END as user_id
-							from
-								friend_link
-							where
-								:target_user_id in (user1_id, user2_id)
-						),
-						friend_of_friend_list as
-						(
-							select
-								CASE
-									WHEN user1_id in (select user_id from friend_list) THEN
-									    user2_id
-									ELSE
-										user1_id
-								END as user_id
-							from
-								friend_link
-							where
-								user1_id in (select user_id from friend_list)
-							or
-								user2_id in (select user_id from friend_list)
-						)
-
-					select
-						distinct
-						id,
-						user_id,
-						name
-					from
-						users
-					where
-						user_id in (select user_id from friend_of_friend_list);
+						with
+						    following as
+						    (
+						        select
+						            following_user_id as user_id
+						        from
+						            follow_relation
+						        where
+						                followed_user_id = :target_user_id
+						    ),
+						    followed as
+						    (
+						        select
+						            followed_user_id as user_id
+						        from
+						            follow_relation
+						        where
+						                following_user_id = :target_user_id
+						    ),
+						    follow_of_following as
+						    (
+						        select
+						            following_user_id as user_id
+						        from
+						            follow_relation
+						        where
+						            followed_user_id in (select user_id from following)
+						        and
+						            followed_user_id in (select user_id from followed)
+						    ),
+						    follow_of_followed as
+						    (
+						        select
+						            followed_user_id as user_id
+						        from
+						            follow_relation
+						        where
+						            following_user_id in (select user_id from following)
+						        and
+						            following_user_id in (select user_id from followed)
+						    )
+						select
+						    id,
+						    user_id,
+						    name
+						from
+						    users
+						where
+						    user_id in (select user_id from follow_of_following)
+						and
+						    user_id in (select user_id from follow_of_followed)
 `
 	query, args, err := sqlx.Named(baseQuery, map[string]interface{}{
 		"target_user_id": userID,
@@ -153,30 +199,35 @@ func (u *User) GetFriendOfFriendList(ctx context.Context, userID int) ([]object.
 
 func (u *User) GetFriendList(ctx context.Context, userID int) ([]object.User, error) {
 	const baseQuery = `
-					with
-					    friend_list as
-						(
-							select
-								CASE
-									WHEN user1_id = :target_user_id THEN
-									    user2_id
-									ELSE
-									    user1_id
-								END as user_id
-							from
-								friend_link
-							where
-								:target_user_id in (user1_id, user2_id)
-						)
-
-					select
-					    id,
-					    user_id,
-					    name
-					from
-					    users
-					where
-					    user_id in (select user_id from friend_list);
+						with
+						    following as
+						    (
+						        select
+						            following_user_id as user_id
+						        from
+						            follow_relation
+						        where
+						            followed_user_id = :target_user_id
+						    ),
+						    followed as
+						    (
+						        select
+						            followed_user_id as user_id
+						        from
+						            follow_relation
+						        where
+						            following_user_id = :target_user_id
+						    )
+						select
+						    id,
+						    user_id,
+						    name
+						from
+						    users
+						where
+						    user_id in (select user_id from following)
+						and
+						    user_id in (select user_id from followed)
 `
 	query, args, err := sqlx.Named(baseQuery, map[string]interface{}{
 		"target_user_id": userID,
