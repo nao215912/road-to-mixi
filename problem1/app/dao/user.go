@@ -147,6 +147,15 @@ func (u *User) GetFriendOfFriendList(ctx context.Context, userID int) ([]object.
 						        where
 						                following_user_id = :target_user_id
 						    ),
+						    follow as
+						    (
+						        select
+						            following.user_id as user_id
+						        from
+						            following
+						        where
+						            user_id in (select user_id from followed)
+						    ),
 						    follow_of_following as
 						    (
 						        select
@@ -154,9 +163,7 @@ func (u *User) GetFriendOfFriendList(ctx context.Context, userID int) ([]object.
 						        from
 						            follow_relation
 						        where
-						            followed_user_id in (select user_id from following)
-						        and
-						            followed_user_id in (select user_id from followed)
+						            followed_user_id in (select user_id from follow)
 						    ),
 						    follow_of_followed as
 						    (
@@ -168,6 +175,15 @@ func (u *User) GetFriendOfFriendList(ctx context.Context, userID int) ([]object.
 						            following_user_id in (select user_id from following)
 						        and
 						            following_user_id in (select user_id from followed)
+						    ),
+						    follow_of_follow as
+						    (
+						        select
+						            follow_of_following.user_id as user_id
+						        from
+						            follow_of_following
+						        where
+						            user_id in (select user_id from follow_of_followed)
 						    )
 						select
 						    id,
@@ -176,9 +192,7 @@ func (u *User) GetFriendOfFriendList(ctx context.Context, userID int) ([]object.
 						from
 						    users
 						where
-						    user_id in (select user_id from follow_of_following)
-						and
-						    user_id in (select user_id from follow_of_followed)
+						    user_id in (select user_id from follow_of_follow)
 `
 	query, args, err := sqlx.Named(baseQuery, map[string]interface{}{
 		"target_user_id": userID,
@@ -217,6 +231,15 @@ func (u *User) GetFriendList(ctx context.Context, userID int) ([]object.User, er
 						            follow_relation
 						        where
 						            following_user_id = :target_user_id
+						    ),
+						    follow as
+						    (
+						        select
+						            following.user_id as user_id
+						        from
+						            following
+						        where
+						            user_id in (select user_id from followed)
 						    )
 						select
 						    id,
@@ -225,9 +248,7 @@ func (u *User) GetFriendList(ctx context.Context, userID int) ([]object.User, er
 						from
 						    users
 						where
-						    user_id in (select user_id from following)
-						and
-						    user_id in (select user_id from followed)
+						    user_id in (select user_id from follow)
 `
 	query, args, err := sqlx.Named(baseQuery, map[string]interface{}{
 		"target_user_id": userID,
