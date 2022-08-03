@@ -7,10 +7,6 @@ import (
 	"minimal_sns/configs"
 )
 
-type DBConfig interface {
-	FormatDSN() string
-}
-
 func initDb(conf configs.Config) (*sqlx.DB, error) {
 	db, err := sqlx.Open(conf.DB.Driver, conf.DB.DataSource)
 	if err != nil {
