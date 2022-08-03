@@ -11,6 +11,70 @@ type User struct {
 	db *sqlx.DB
 }
 
+func (u *User) GetFriendListLimitOffset(ctx context.Context, userID, limit, offset int) ([]object.User, error) {
+	const baseQuery = `
+						with
+						    following as
+						    (
+						        select
+						            following_user_id as user_id
+						        from
+						            follow_relation
+						        where
+						            followed_user_id = :target_user_id
+						    ),
+						    followed as
+						    (
+						        select
+						            followed_user_id as user_id
+						        from
+						            follow_relation
+						        where
+						            following_user_id = :target_user_id
+						    ),
+						    follow as
+						    (
+						        select
+						            following.user_id as user_id
+						        from
+						            following
+						        where
+						            user_id in (select user_id from followed)
+						    )
+						select
+						    id,
+						    user_id,
+						    name
+						from
+						    users
+						where
+						    user_id in (select user_id from follow)
+						order by 
+						    user_id
+						limit 
+							:target_limit
+						offset 
+							:target_offset
+`
+	query, args, err := sqlx.Named(baseQuery, map[string]interface{}{
+		"target_user_id": userID,
+		"target_limit":   limit,
+		"target_offset":  offset,
+	})
+	if err != nil {
+		return nil, err
+	}
+	query = u.db.Rebind(query)
+
+	var users []object.User
+	err = u.db.SelectContext(ctx, &users, query, args...)
+	if err != nil {
+		return nil, err
+	}
+
+	return users, nil
+}
+
 // GetFriendOfFriendListExceptBlockListAndFriendList ロジックをgo側でやるかsql側でやるか迷う　（ロジックのテストをデータベースないとできないのが微妙）
 func (u *User) GetFriendOfFriendListExceptBlockListAndFriendList(ctx context.Context, userID int) ([]object.User, error) {
 	const baseQuery = `
