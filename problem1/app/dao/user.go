@@ -17,25 +17,25 @@ func (u *User) GetFriendListLimitOffset(ctx context.Context, userID, limit, offs
 						    following as
 						    (
 						        select
-						            following_user_id as user_id
-						        from
-						            follow_relation
-						        where
-						            followed_user_id = :target_user_id
-						    ),
-						    followed as
-						    (
-						        select
-						            followed_user_id as user_id
+						        	followed_user_id as user_id
 						        from
 						            follow_relation
 						        where
 						            following_user_id = :target_user_id
 						    ),
+						    followed as
+						    (
+						        select
+						            following_user_id as user_id
+						        from
+						            follow_relation
+						        where
+						        	followed_user_id = :target_user_id
+						    ),
 						    follow as
 						    (
 						        select
-						            following.user_id as user_id
+						            user_id
 						        from
 						            following
 						        where
@@ -82,20 +82,20 @@ func (u *User) GetFriendOfFriendListExceptBlockListAndFriendList(ctx context.Con
 						    following as
 						    (
 						        select
-						            following_user_id as user_id
-						        from
-						            follow_relation
-						        where
-						            followed_user_id = :target_user_id
-						    ),
-						    followed as
-						    (
-						        select
-						            followed_user_id as user_id
+						        	followed_user_id as user_id
 						        from
 						            follow_relation
 						        where
 						            following_user_id = :target_user_id
+						    ),
+						    followed as
+						    (
+						        select
+						            following_user_id as user_id
+						        from
+						            follow_relation
+						        where
+						        	followed_user_id = :target_user_id
 						    ),
 						    follow as
 						    (
@@ -109,25 +109,25 @@ func (u *User) GetFriendOfFriendListExceptBlockListAndFriendList(ctx context.Con
 						    follow_of_following as
 						    (
 						        select
-						            following_user_id as user_id
-						        from
-						            follow_relation
-						        where
-						            followed_user_id in (select user_id from follow)
-						    ),
-						    follow_of_followed as
-						    (
-						        select
 						            followed_user_id as user_id
 						        from
 						            follow_relation
 						        where
 						            following_user_id in (select user_id from follow)
 						    ),
+						    follow_of_followed as
+						    (
+						        select
+						            following_user_id as user_id
+						        from
+						            follow_relation
+						        where
+						            followed_user_id in (select user_id from follow)
+						    ),
 						    follow_of_follow as
 						    (
 						        select
-						            follow_of_following.user_id as user_id
+						        	user_id
 						        from
 						            follow_of_following
 						        where
@@ -136,25 +136,25 @@ func (u *User) GetFriendOfFriendListExceptBlockListAndFriendList(ctx context.Con
 						    blocking as
 						    (
 						        select
-						            blocking_user_id as user_id
-						        from
-						            block_relation
-						        where
-						            blocked_user_id = :target_user_id
-						    ),
-						    blocked as
-						    (
-						        select
 						            blocked_user_id as user_id
 						        from
 						            block_relation
 						        where
 						            blocking_user_id = :target_user_id
 						    ),
+						    blocked as
+						    (
+						        select
+						            blocking_user_id as user_id
+						        from
+						            block_relation
+						        where
+						            blocked_user_id = :target_user_id
+						    ),
 						    block as
 						    (
 						        select
-						            blocking.user_id as user_id
+						        	user_id
 						        from
 						            blocking
 						        where
@@ -198,25 +198,25 @@ func (u *User) GetFriendOfFriendList(ctx context.Context, userID int) ([]object.
 						    following as
 						    (
 						        select
-						            following_user_id as user_id
+						        	followed_user_id as user_id
 						        from
 						            follow_relation
 						        where
-						                followed_user_id = :target_user_id
+						            following_user_id = :target_user_id
 						    ),
 						    followed as
 						    (
 						        select
-						            followed_user_id as user_id
+						            following_user_id as user_id
 						        from
 						            follow_relation
 						        where
-						                following_user_id = :target_user_id
+						        	followed_user_id = :target_user_id
 						    ),
 						    follow as
 						    (
 						        select
-						            following.user_id as user_id
+						            user_id
 						        from
 						            following
 						        where
@@ -225,27 +225,25 @@ func (u *User) GetFriendOfFriendList(ctx context.Context, userID int) ([]object.
 						    follow_of_following as
 						    (
 						        select
+						            followed_user_id as user_id
+						        from
+						            follow_relation
+						        where
+						            following_user_id in (select user_id from follow)
+						    ),
+						    follow_of_followed as
+						    (
+						        select
 						            following_user_id as user_id
 						        from
 						            follow_relation
 						        where
 						            followed_user_id in (select user_id from follow)
 						    ),
-						    follow_of_followed as
-						    (
-						        select
-						            followed_user_id as user_id
-						        from
-						            follow_relation
-						        where
-						            following_user_id in (select user_id from following)
-						        and
-						            following_user_id in (select user_id from followed)
-						    ),
 						    follow_of_follow as
 						    (
 						        select
-						            follow_of_following.user_id as user_id
+						        	user_id
 						        from
 						            follow_of_following
 						        where
@@ -285,25 +283,25 @@ func (u *User) GetFriendList(ctx context.Context, userID int) ([]object.User, er
 						    following as
 						    (
 						        select
-						            following_user_id as user_id
-						        from
-						            follow_relation
-						        where
-						            followed_user_id = :target_user_id
-						    ),
-						    followed as
-						    (
-						        select
-						            followed_user_id as user_id
+						        	followed_user_id as user_id
 						        from
 						            follow_relation
 						        where
 						            following_user_id = :target_user_id
 						    ),
+						    followed as
+						    (
+						        select
+						            following_user_id as user_id
+						        from
+						            follow_relation
+						        where
+						        	followed_user_id = :target_user_id
+						    ),
 						    follow as
 						    (
 						        select
-						            following.user_id as user_id
+						            user_id
 						        from
 						            following
 						        where
