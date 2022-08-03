@@ -34,7 +34,7 @@ func TestGetFriendList(t *testing.T) {
 				t.Fatal(err)
 			}
 			got := res.StatusCode
-			if res.StatusCode != tt.want {
+			if got != tt.want {
 				t.Errorf("%s got = %v, want %v", tt.url, got, tt.want)
 			}
 		})
