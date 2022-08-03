@@ -75,7 +75,7 @@ func (u *User) GetFriendListLimitOffset(ctx context.Context, userID, limit, offs
 	return users, nil
 }
 
-// GetFriendOfFriendListExceptBlockListAndFriendList ロジックをgo側でやるかsql側でやるか迷う　（ロジックのテストをデータベースないとできないのが微妙）
+// GetFriendOfFriendListExceptBlockListAndFriendList  ロジックをgo側でやるかsql側でやるか迷う　（ロジックのテストをデータベースないとできないのが微妙）
 func (u *User) GetFriendOfFriendListExceptBlockListAndFriendList(ctx context.Context, userID int) ([]object.User, error) {
 	const baseQuery = `
 						with
@@ -172,6 +172,8 @@ func (u *User) GetFriendOfFriendListExceptBlockListAndFriendList(ctx context.Con
 						    user_id not in (select user_id from follow)
 						and
 						    user_id not in (select user_id from block)
+						order by 
+						    user_id
 `
 	query, args, err := sqlx.Named(baseQuery, map[string]interface{}{
 		"target_user_id": userID,
@@ -257,6 +259,8 @@ func (u *User) GetFriendOfFriendList(ctx context.Context, userID int) ([]object.
 						    users
 						where
 						    user_id in (select user_id from follow_of_follow)
+						order by 
+						    user_id
 `
 	query, args, err := sqlx.Named(baseQuery, map[string]interface{}{
 		"target_user_id": userID,
@@ -313,6 +317,8 @@ func (u *User) GetFriendList(ctx context.Context, userID int) ([]object.User, er
 						    users
 						where
 						    user_id in (select user_id from follow)
+						order by 
+						    user_id
 `
 	query, args, err := sqlx.Named(baseQuery, map[string]interface{}{
 		"target_user_id": userID,

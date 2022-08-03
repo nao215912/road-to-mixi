@@ -2,23 +2,22 @@ package handler
 
 import (
 	"fmt"
-	"github.com/labstack/echo/v4"
 	"strconv"
 )
 
-func UserIDPathParameter(c echo.Context) (int, error) {
-	userID, err := strconv.Atoi(c.Param("user_id"))
-	if userID < 0 {
-		return 0, fmt.Errorf("id must be a positive number")
-	}
+func ConvertUserID(s string) (int, error) {
+	userID, err := strconv.Atoi(s)
 	if err != nil {
 		return 0, err
+	}
+	if userID < 0 {
+		return 0, fmt.Errorf("id must be a positive number")
 	}
 	return userID, nil
 }
 
-func LimitQueryParameter(c echo.Context) (int, error) {
-	limit, err := strconv.Atoi(c.QueryParam("limit"))
+func ConvertLimit(s string) (int, error) {
+	limit, err := strconv.Atoi(s)
 	if err != nil {
 		return 0, err
 	}
@@ -28,8 +27,8 @@ func LimitQueryParameter(c echo.Context) (int, error) {
 	return limit, nil
 }
 
-func PageQueryParameter(c echo.Context) (int, error) {
-	page, err := strconv.Atoi(c.QueryParam("page"))
+func ConvertPageQuery(s string) (int, error) {
+	page, err := strconv.Atoi(s)
 	if err != nil {
 		return 0, err
 	}

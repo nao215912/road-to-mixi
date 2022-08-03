@@ -8,15 +8,15 @@ import (
 
 func NewGetFriendListPaging(d dao.Dao) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		userID, err := UserIDPathParameter(c)
+		userID, err := ConvertUserID(c.Param("user_id"))
 		if err != nil {
 			return err
 		}
-		limit, err := LimitQueryParameter(c)
+		limit, err := ConvertLimit(c.QueryParam("limit"))
 		if err != nil {
 			return err
 		}
-		page, err := PageQueryParameter(c)
+		page, err := ConvertPageQuery(c.QueryParam("page"))
 		if err != nil {
 			return err
 		}

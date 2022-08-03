@@ -8,7 +8,7 @@ import (
 
 func NewGetFriendOfFriendListV2(d dao.Dao) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		userID, err := UserIDPathParameter(c)
+		userID, err := ConvertUserID(c.Param("user_id"))
 		if err != nil {
 			return err
 		}
