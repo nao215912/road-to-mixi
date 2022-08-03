@@ -14,7 +14,6 @@ type dao struct {
 	db *sqlx.DB
 }
 
-// Create DAO
 func NewDao(conf configs.Config) (Dao, error) {
 	db, err := initDb(conf)
 	if err != nil {
