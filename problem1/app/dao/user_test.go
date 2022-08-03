@@ -8,16 +8,30 @@ import (
 	"minimal_sns/domain/object"
 	"minimal_sns/domain/repository"
 	"reflect"
+	"sync"
 	"testing"
 )
 
-func NewTestUser(insertQueries []string) (repository.User, error) {
-	db, err := initDb(configs.Config{
-		DB: configs.DBConfig{
-			Driver:     "mysql",
-			DataSource: "root:@(test_db:3306)/app",
-		},
+var (
+	db   *sqlx.DB
+	once sync.Once
+)
+
+func getDB() (*sqlx.DB, error) {
+	var err error
+	once.Do(func() {
+		db, err = initDb(configs.Config{
+			DB: configs.DBConfig{
+				Driver:     "mysql",
+				DataSource: "root:@(test_db:3306)/app",
+			},
+		})
 	})
+	return db, err
+}
+
+func newTestUser(insertQueries []string) (repository.User, error) {
+	db, err := getDB()
 	if err != nil {
 		return nil, err
 	}
@@ -110,7 +124,7 @@ func TestGetFriendList(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			u, err := NewTestUser(tt.queries)
+			u, err := newTestUser(tt.queries)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -187,7 +201,7 @@ func TestGetFriendOfFriendList(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			u, err := NewTestUser(tt.queries)
+			u, err := newTestUser(tt.queries)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -301,7 +315,7 @@ func TestGetFriendOfFriendListExceptBlockListAndFriendList(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			u, err := NewTestUser(tt.queries)
+			u, err := newTestUser(tt.queries)
 			if err != nil {
 				t.Fatal(err)
 			}
@@ -372,7 +386,7 @@ func TestGetFriendListLimitOffset(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			u, err := NewTestUser(tt.queries)
+			u, err := newTestUser(tt.queries)
 			if err != nil {
 				t.Fatal(err)
 			}
