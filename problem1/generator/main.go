@@ -1,13 +1,12 @@
 package main
 
 import (
+	"bufio"
 	"flag"
 	"fmt"
-	"github.com/PuerkitoBio/goquery"
 	"log"
 	"math/rand"
-	"net/http"
-	"strings"
+	"os"
 )
 
 var (
@@ -17,7 +16,8 @@ var (
 		"follow": followGenerator,
 		"block":  blockGenerator,
 	}
-	n = 10000
+	nRelations = 50
+	nUsers     = 10
 )
 
 func init() {
@@ -35,27 +35,32 @@ func main() {
 }
 
 func usersGenerator() error {
-	res, err := http.Get("https://ideas.fandom.com/wiki/List_of_Gods")
+	file, err := os.Open("/usr/share/dict/propernames")
 	if err != nil {
 		return err
 	}
-	doc, err := goquery.NewDocumentFromReader(res.Body)
-	if err != nil {
-		return err
+	defer file.Close()
+	s := bufio.NewScanner(file)
+
+	fmt.Print("INSERT INTO `users` (`user_id`, `name`) VALUES")
+	for i := 0; s.Scan() && i < nUsers; i++ {
+		query := fmt.Sprintf(`(%d, "%s")`, i+1, s.Text())
+		if i == 0 {
+			fmt.Print(" ", query)
+		} else {
+			fmt.Print(", ", query)
+		}
 	}
-	doc.Find(".new").Each(func(index int, s *goquery.Selection) {
-		text := strings.TrimSpace(s.Text())
-		fmt.Printf("INSERT INTO `users` (`user_id`,`name`) VALUES (%d,\"%s\");\n", index+1, text)
-	})
+	fmt.Print(";")
 	return nil
 }
 
 func followGenerator() error {
 	fmt.Print("INSERT INTO `follow_relation` (`following_user_id`, `followed_user_id`) VALUES")
 	m := map[string]struct{}{}
-	for i := 0; i < n; {
-		a := rand.Int()%400 + 1
-		b := rand.Int()%400 + 1
+	for i := 0; i < nRelations; {
+		a := rand.Int()%nUsers + 1
+		b := rand.Int()%nUsers + 1
 		if a == b {
 			continue
 		}
@@ -66,7 +71,7 @@ func followGenerator() error {
 		if i == 0 {
 			fmt.Print(" ", query)
 		} else {
-			fmt.Print(" ,", query)
+			fmt.Print(", ", query)
 		}
 		m[query] = struct{}{}
 		i++
@@ -78,9 +83,9 @@ func followGenerator() error {
 func blockGenerator() error {
 	fmt.Print("INSERT INTO `block_relation` (`blocking_user_id`, `blocked_user_id`) VALUES")
 	m := map[string]struct{}{}
-	for i := 0; i < n; {
-		a := rand.Int()%400 + 1
-		b := rand.Int()%400 + 1
+	for i := 0; i < nRelations; {
+		a := rand.Int()%nUsers + 1
+		b := rand.Int()%nUsers + 1
 		if a == b {
 			continue
 		}
@@ -91,7 +96,7 @@ func blockGenerator() error {
 		if i == 0 {
 			fmt.Print(" ", query)
 		} else {
-			fmt.Print(" ,", query)
+			fmt.Print(", ", query)
 		}
 		m[query] = struct{}{}
 		i++
