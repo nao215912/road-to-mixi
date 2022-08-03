@@ -12,6 +12,9 @@ stop:
 db:
 	docker-compose exec db mysql -u root
 
+test_db:
+	docker-compose exec test_db mysql -u root
+
 app:
 	docker-compose exec app bash
 
