@@ -10,7 +10,6 @@ import (
 )
 
 func main() {
-
 	conf := configs.Get()
 	fmt.Println(conf.DB.DataSource)
 	d, err := dao.NewDao(conf)
