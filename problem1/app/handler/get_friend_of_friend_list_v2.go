@@ -10,11 +10,11 @@ func NewGetFriendOfFriendListV2(d dao.Dao) echo.HandlerFunc {
 	return func(c echo.Context) error {
 		userID, err := ConvertUserID(c.Param("user_id"))
 		if err != nil {
-			return err
+			return c.String(http.StatusBadRequest, err.Error())
 		}
 		us, err := d.User().GetFriendOfFriendListExceptBlockListAndFriendList(c.Request().Context(), userID)
 		if err != nil {
-			return err
+			return c.String(http.StatusInternalServerError, err.Error())
 		}
 		return c.JSON(http.StatusOK, us)
 	}
