@@ -100,7 +100,7 @@ func (u *User) GetFriendOfFriendListExceptBlockListAndFriendList(ctx context.Con
 						    follow as
 						    (
 						        select
-						            following.user_id as user_id
+						        	user_id
 						        from
 						            following
 						        where
