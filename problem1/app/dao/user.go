@@ -75,7 +75,6 @@ func (u *User) GetFriendListLimitOffset(ctx context.Context, userID, limit, offs
 	return users, nil
 }
 
-// GetFriendOfFriendListExceptBlockListAndFriendList  ロジックをgo側でやるかsql側でやるか迷う　（ロジックのテストをデータベースないとできないのが微妙）
 func (u *User) GetFriendOfFriendListExceptBlockListAndFriendList(ctx context.Context, userID int) ([]object.User, error) {
 	const baseQuery = `
 						with
