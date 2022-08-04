@@ -5,7 +5,7 @@ import (
 	"strconv"
 )
 
-func ConvertUserID(s string) (int, error) {
+func parseUserID(s string) (int, error) {
 	userID, err := strconv.Atoi(s)
 	if err != nil {
 		return 0, fmt.Errorf("user_id must be numeric")
@@ -16,7 +16,7 @@ func ConvertUserID(s string) (int, error) {
 	return userID, nil
 }
 
-func ConvertLimit(s string) (int, error) {
+func parseLimit(s string) (int, error) {
 	limit, err := strconv.Atoi(s)
 	if err != nil {
 		return 0, fmt.Errorf("limit must be numeric")
@@ -27,7 +27,7 @@ func ConvertLimit(s string) (int, error) {
 	return limit, nil
 }
 
-func ConvertPageQuery(s string) (int, error) {
+func parsePage(s string) (int, error) {
 	page, err := strconv.Atoi(s)
 	if err != nil {
 		return 0, fmt.Errorf("page must be numeric")

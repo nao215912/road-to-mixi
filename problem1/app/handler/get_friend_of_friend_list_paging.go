@@ -6,17 +6,28 @@ import (
 	"net/http"
 )
 
+// NewGetFriendListPaging
+//	あるページの相互フォローのユーザー
+//	user_id
+//		基準のユーザーのid
+//		正の数で出なければならない
+//	limit
+//		１ページのユーザー数
+//		正の数で出なければならない
+//	page
+//		ページ数
+//		正の数で出なければならない
 func NewGetFriendListPaging(d dao.Dao) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		userID, err := ConvertUserID(c.Param("user_id"))
+		userID, err := parseUserID(c.Param("user_id"))
 		if err != nil {
 			return c.String(http.StatusBadRequest, err.Error())
 		}
-		limit, err := ConvertLimit(c.QueryParam("limit"))
+		limit, err := parseLimit(c.QueryParam("limit"))
 		if err != nil {
 			return c.String(http.StatusBadRequest, err.Error())
 		}
-		page, err := ConvertPageQuery(c.QueryParam("page"))
+		page, err := parsePage(c.QueryParam("page"))
 		if err != nil {
 			return c.String(http.StatusBadRequest, err.Error())
 		}

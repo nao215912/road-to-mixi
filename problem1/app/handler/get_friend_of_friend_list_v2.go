@@ -6,9 +6,14 @@ import (
 	"net/http"
 )
 
+// NewGetFriendOfFriendListV2
+//	友達の友達から友達とブロック関係のユーザーを除いたユーザー
+//	user_id
+//		基準のユーザーのid
+//		正の数で出なければならない
 func NewGetFriendOfFriendListV2(d dao.Dao) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		userID, err := ConvertUserID(c.Param("user_id"))
+		userID, err := parseUserID(c.Param("user_id"))
 		if err != nil {
 			return c.String(http.StatusBadRequest, err.Error())
 		}

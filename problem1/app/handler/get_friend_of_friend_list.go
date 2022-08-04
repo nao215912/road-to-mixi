@@ -6,9 +6,14 @@ import (
 	"net/http"
 )
 
+// NewGetFriendOfFriendList
+//	相互フォローのユーザーの相互フォローのユーザー
+//	user_id
+//		基準のユーザーのid
+//		正の数でなければいけない
 func NewGetFriendOfFriendList(d dao.Dao) echo.HandlerFunc {
 	return func(c echo.Context) error {
-		userID, err := ConvertUserID(c.Param("user_id"))
+		userID, err := parseUserID(c.Param("user_id"))
 		if err != nil {
 			return c.String(http.StatusBadRequest, err.Error())
 		}
