@@ -13,47 +13,47 @@ func TestGetFriendListPaging(t *testing.T) {
 	}{
 		{
 			name: "example",
-			url:  "http://localhost:1323/get_friend_of_friend_list_paging/42?limit=42&page=42",
+			url:  "http://localhost:8080/get_friend_of_friend_list_paging/42?limit=42&page=42",
 			want: http.StatusOK,
 		},
 		{
 			name: "non_numeric_user_id",
-			url:  "http://localhost:1323/get_friend_of_friend_list_paging/a?limit=42&page=42",
+			url:  "http://localhost:8080/get_friend_of_friend_list_paging/a?limit=42&page=42",
 			want: http.StatusBadRequest,
 		},
 		{
 			name: "minus_user_id",
-			url:  "http://localhost:1323/get_friend_of_friend_list_paging/-42?limit=42&page=42",
+			url:  "http://localhost:8080/get_friend_of_friend_list_paging/-42?limit=42&page=42",
 			want: http.StatusBadRequest,
 		},
 		{
 			name: "non_limit",
-			url:  "http://localhost:1323/get_friend_of_friend_list_paging/42?page=42",
+			url:  "http://localhost:8080/get_friend_of_friend_list_paging/42?page=42",
 			want: http.StatusBadRequest,
 		},
 		{
 			name: "non_numeric_limit",
-			url:  "http://localhost:1323/get_friend_of_friend_list_paging/42?limit=a&page=42",
+			url:  "http://localhost:8080/get_friend_of_friend_list_paging/42?limit=a&page=42",
 			want: http.StatusBadRequest,
 		},
 		{
 			name: "minus_limit",
-			url:  "http://localhost:1323/get_friend_of_friend_list_paging/42?limit=-42&page=42",
+			url:  "http://localhost:8080/get_friend_of_friend_list_paging/42?limit=-42&page=42",
 			want: http.StatusBadRequest,
 		},
 		{
 			name: "non_page",
-			url:  "http://localhost:1323/get_friend_of_friend_list_paging/42?limit=42",
+			url:  "http://localhost:8080/get_friend_of_friend_list_paging/42?limit=42",
 			want: http.StatusBadRequest,
 		},
 		{
 			name: "non_numeric_page",
-			url:  "http://localhost:1323/get_friend_of_friend_list_paging/42?limit=42&page=a",
+			url:  "http://localhost:8080/get_friend_of_friend_list_paging/42?limit=42&page=a",
 			want: http.StatusBadRequest,
 		},
 		{
 			name: "minus_page",
-			url:  "http://localhost:1323/get_friend_of_friend_list_paging/42?limit=-42&page=-42",
+			url:  "http://localhost:8080/get_friend_of_friend_list_paging/42?limit=-42&page=-42",
 			want: http.StatusBadRequest,
 		},
 	}

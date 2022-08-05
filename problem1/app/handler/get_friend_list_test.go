@@ -13,17 +13,17 @@ func TestGetFriendList(t *testing.T) {
 	}{
 		{
 			name: "example",
-			url:  "http://localhost:1323/get_friend_list/12",
+			url:  "http://localhost:8080/get_friend_list/12",
 			want: http.StatusOK,
 		},
 		{
 			name: "non_numeric_user_id",
-			url:  "http://localhost:1323/get_friend_list/a",
+			url:  "http://localhost:8080/get_friend_list/a",
 			want: http.StatusBadRequest,
 		},
 		{
 			name: "minus_user_id",
-			url:  "http://localhost:1323/get_friend_list/-12",
+			url:  "http://localhost:8080/get_friend_list/-12",
 			want: http.StatusBadRequest,
 		},
 	}
