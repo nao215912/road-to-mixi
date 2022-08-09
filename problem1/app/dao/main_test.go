@@ -7,34 +7,13 @@ import (
 	"minimal_sns/configs"
 	"minimal_sns/domain/repository"
 	"os"
-	"sync"
 	"testing"
 )
 
-var (
-	db   *sqlx.DB
-	once sync.Once
-)
-
-func getDB() (*sqlx.DB, error) {
-	var err error
-	once.Do(func() {
-		db, err = initDb(configs.Config{
-			DB: configs.DBConfig{
-				Driver:     "mysql",
-				DataSource: "root:@(test_db:3306)/app",
-			},
-		})
-	})
-	return db, err
-}
+var db *sqlx.DB
 
 func newTestUser(insertQueries []string) (repository.User, error) {
-	db, err := getDB()
-	if err != nil {
-		return nil, err
-	}
-	err = deleteAll(db)
+	err := deleteAll(db)
 	if err != nil {
 		return nil, err
 	}
